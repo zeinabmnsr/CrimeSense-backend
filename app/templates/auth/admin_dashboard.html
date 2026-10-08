@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - CrimeSense{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="display-5 fw-bold">
+                    <i class="fas fa-tachometer-alt text-danger me-3"></i>
+                    Admin Dashboard
+                </h1>
+                <div>
+                    <span class="badge bg-danger fs-6 me-2">
+                        {% if user.is_super_admin %}Super Admin{% else %}Admin{% endif %}
+                    </span>
+                    <form method="POST" action="{{ url_for('auth.logout') }}" class="d-inline">
+                        
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-5">
+        <div class="col-md-2 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-2x mb-2"></i>
+                    <h3>{{ stats.total_users }}</h3>
+                    <p class="mb-0">Total Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-user-shield fa-2x mb-2"></i>
+                    <h3>{{ stats.total_admins }}</h3>
+                    <p class="mb-0">Admins</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 mb-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                    <h3>{{ stats.total_reports }}</h3>
+                    <p class="mb-0">Reports</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-map-marker-alt fa-2x mb-2"></i>
+                    <h3>{{ stats.total_hotspots }}</h3>
+                    <p class="mb-0">Hotspots</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 mb-3">
+            <div class="card bg-secondary text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-envelope fa-2x mb-2"></i>
+                    <h3>{{ stats.total_contacts }}</h3>
+                    <p class="mb-0">Contacts</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2 mb-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-clock fa-2x mb-2"></i>
+                    <h3>{{ stats.pending_reports }}</h3>
+                    <p class="mb-0">Pending</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Admin Profile Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-shield me-2"></i>Admin Profile
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Role:</strong> 
+                        <span class="badge bg-danger">
+                            {% if user.is_super_admin %}Super Admin{% else %}Admin{% endif %}
+                        </span>
+                    </p>
+                    <p><strong>Member Since:</strong> {{ user.created_at.strftime('%B %d, %Y') if user.created_at else 'N/A' }}</p>
+                    <a href="{{ url_for('profile.view_profile') }}" class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-edit me-2"></i>View Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="col-md-8 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Admin Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-light border-0">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-exclamation-triangle text-danger mb-3" style="font-size: 2rem;"></i>
+                                    <h6>Crime Reports</h6>
+                                    <p class="text-muted small">Manage crime reports</p>
+                                    <div class="d-grid gap-2">
+                                        <a href="{{ url_for('reports.list_reports') }}" class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-list me-1"></i>View All
+                                        </a>
+                                        <a href="{{ url_for('reports.create_report') }}" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-plus me-1"></i>Create Report
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-light border-0">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-map-marker-alt text-danger mb-3" style="font-size: 2rem;"></i>
+                                    <h6>Crime Hotspots</h6>
+                                    <p class="text-muted small">Manage crime hotspots</p>
+                                    <div class="d-grid gap-2">
+                                        <a href="{{ url_for('hotspots.list_hotspots') }}" class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-list me-1"></i>View All
+                                        </a>
+                                        <a href="{{ url_for('hotspots.create_hotspot') }}" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-plus me-1"></i>Add Hotspot
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-light border-0">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-users text-danger mb-3" style="font-size: 2rem;"></i>
+                                    <h6>User Management</h6>
+                                    <p class="text-muted small">Manage system users</p>
+                                    <div class="d-grid gap-2">
+                                        <a href="{{ url_for('auth.admin_users') }}" class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-users me-1"></i>View Users
+                                        </a>
+                                        {% if user.is_super_admin %}
+                                        <a href="{{ url_for('auth.admin_register') }}" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-user-plus me-1"></i>Create Admin
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

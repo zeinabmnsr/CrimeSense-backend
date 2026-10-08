@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - CrimeSense{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                 {% if users %}
+                     {% for user in users %}
+                        <h1 class="display-5 fw-bold">
+                    <i class="fas fa-tachometer-alt text-danger me-3"></i>
+                    Welcome, {{ user.first_name }} !
+                </h1>
+                    {% endfor %}
+                {% endif %}
+                <form method="POST" action="{{ url_for('auth.logout') }}" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- User Profile Card -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user me-2"></i>Profile Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Member Since:</strong> {{ user.created_at.strftime('%B %d, %Y') if user.created_at else 'N/A' }}</p>
+                    <p><strong>Status:</strong> 
+                        <span class="badge bg-success">{{ 'Active' if user.is_active else 'Inactive' }}</span>
+                    </p>
+                    <a href="{{ url_for('auth.home') }}" class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="col-md-8 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light border-0">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-user text-danger mb-3" style="font-size: 2rem;"></i>
+                                    <h6>My Profile</h6>
+                                    <p class="text-muted small">View and edit your profile information</p>
+                                    <a href="{{ url_for('profile.view_profile') }}" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-user me-2"></i>View Profile
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light border-0">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-map-marker-alt text-danger mb-3" style="font-size: 2rem;"></i>
+                                    <h6>Crime Hotspots</h6>
+                                    <p class="text-muted small">View and manage crime hotspots</p>
+                                    <div class="d-grid gap-2">
+                                        <a href="{{ url_for('hotspots.list_hotspots') }}" class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-list me-1"></i>View All
+                                        </a>
+                                        <a href="{{ url_for('hotspots.create_hotspot') }}" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-plus me-1"></i>Add Hotspot
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light border-0">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-mobile-alt text-danger mb-3" style="font-size: 2rem;"></i>
+                                    <h6>Download Mobile App</h6>
+                                    <p class="text-muted small">Get the CrimeSense app for real-time alerts</p>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light border-0">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-envelope text-danger mb-3" style="font-size: 2rem;"></i>
+                                    <h6>Contact Support</h6>
+                                    <p class="text-muted small">Need help? Get in touch with our team</p>
+                                    <a href="{{ url_for('contactus') }}" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-paper-plane me-2"></i>Contact Us
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="card bg-light border-0">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-exclamation-triangle text-danger mb-3" style="font-size: 2rem;"></i>
+                                    <h6>Crime Reports</h6>
+                                    <p class="text-muted small">Report and view crime incidents</p>
+                                    <div class="d-grid gap-2">
+                                        <a href="{{ url_for('reports.list_reports') }}" class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-list me-1"></i>View All
+                                        </a>
+                                        <a href="{{ url_for('reports.create_report') }}" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-plus me-1"></i>Create Report
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistics Row -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Community Safety Stats
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <div class="border-end">
+                                <h3 class="text-danger fw-bold">50K+</h3>
+                                <p class="text-muted mb-0">Active Users</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="border-end">
+                                <h3 class="text-danger fw-bold">1000+</h3>
+                                <p class="text-muted mb-0">Communities</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="border-end">
+                                <h3 class="text-danger fw-bold">24/7</h3>
+                                <p class="text-muted mb-0">Monitoring</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h3 class="text-danger fw-bold">99.9%</h3>
+                            <p class="text-muted mb-0">Uptime</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
