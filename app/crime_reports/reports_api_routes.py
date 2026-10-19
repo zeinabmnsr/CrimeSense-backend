@@ -188,7 +188,7 @@ def get_upload_folder():
     )
 
 
-def add_image_url(report):
+'''def add_image_url(report):
     if report.get("image_path"):
         report["image_url"] = (
             f"http://127.0.0.1:5000/static/uploads/images/"
@@ -196,8 +196,19 @@ def add_image_url(report):
         )
     else:
         report["image_url"] = None
+'''
+def add_image_url(report):
+    filename = report.get("image_path")
 
+    if filename:
+        report["image_url"] = (
+            f"{os.environ.get('BACKEND_URL', 'https://crimesense-backend.onrender.com')}"
+            f"/static/uploads/images/{filename}"
+        )
+    else:
+        report["image_url"] = None
 
+    return report
 
 @reports_api_bp.route("/create", methods=["POST"])
 @jwt_required()
